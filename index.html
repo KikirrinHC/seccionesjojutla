@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title>Distritos Electorales Jojutla</title> 
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8" http-equiv="X-UA-Compatible"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <link rel="apple-touch-icon" href="images/"/>
+        <link rel="shortcut icon" href="images/">
+        <link rel="icon" href="images/" />
+        <script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhOqIBo5qj3sxia_z9hDYSmZNVGC2zht0&libraries=drawing,geometry"
+  type="text/javascript"></script>
+      <!--  <script type="text/javascript" src="cordova.js"></script> -->
+  <body onload="initialize();">
+            <div class="" id="map_canvas"></div>
+             <button id="update" onclick="update()">Actualizar</button>          
+    <script>
+
+        var map;
+        var marker;
+		var imageBounds;
+
+
+        $(window).resize(function() {
+            $("#map_canvas").css("height", $(window).height() - 45);
+        });
+
+
+		function initialize() {
+		 $("#map_canvas").css("height", $(window).height() - 45);
+		
+					var mapOptions = {
+						zoom: 13
+					};
+					map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+			  
+					marker = new google.maps.Marker({
+					});
+					var imageBounds = new google.maps.LatLngBounds(
+					//	new google.maps.LatLng(19.15324593718747, -99.74139422178268),
+						//new google.maps.LatLng(19.29051703073281, -99.60967898368835)
+						
+						new google.maps.LatLng(18.518604760156, -99.30174766073281),
+						new google.maps.LatLng(18.649848759226842, -99.14712684088767)
+					);
+
+		  // Try HTML5 geolocation
+			if(navigator.geolocation) {
+			
+				navigator.geolocation.getCurrentPosition(function(position) {
+					var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+					
+					//var pos = new google.maps.LatLng(19.280359863820017, -99.65629577636719);
+					marker.setPosition(pos);
+					marker.setMap(map);
+					var rectangulo = new google.maps.Rectangle();
+					rectangulo.setBounds(imageBounds);
+					var oldmap = new google.maps.GroundOverlay("images/mapa2.png", imageBounds);
+					oldmap.setMap(map);
+					var limites = rectangulo.getBounds().contains(pos);
+						if(limites){
+							map.setCenter(pos);
+						}else{
+							map.setCenter(new google.maps.LatLng(18.545031110791758, -99.27015102202995));		
+							alert("su posición no se encuentra en una sección identificada, será redirigido al àrea correspondiente");
+								
+						}											
+												
+					
+					
+				}, function() {
+				  handleNoGeolocation(true);
+				});
+			 } else {
+				// Browser doesn't support Geolocation
+				handleNoGeolocation(false);
+			 }
+			 
+			/*  google.maps.event.addListener(map, 'click', function(event) {
+   placeMarker(event.latLng);
+});*/
+		
+		}
+		
+			
+
+function placeMarker(location) {
+alert(location);
+    var marker = new google.maps.Marker({
+        position: location, 
+        map: map
+    });
+}
+		
+		
+	function update(){
+		//alert();
+		marker.setMap(null);
+		navigator.geolocation.getCurrentPosition(function(position) {
+			var pos2 = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+			marker.setPosition(pos2);
+			marker.setMap(map);
+			map.setCenter(pos2);
+		}, function() {
+			handleNoGeolocation(true);
+		});
+	}
+function handleNoGeolocation(errorFlag) {
+  if (errorFlag) {
+    var content = 'Error: The Geolocation service failed.';
+		alert("geo failed");
+  } else {
+    var content = 'Error: Your browser doesn\'t support geolocation.';
+		alert("geo unsupported");
+  }
+
+  var options = {
+    map: map,
+    position: new google.maps.LatLng(18.6137503,-99.178399),
+    content: content
+  };
+
+  map.setCenter(options.position);
+}
+		
+
+
+    </script>
+   
+</body>
+</html>
+
+
